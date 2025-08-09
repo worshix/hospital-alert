@@ -101,12 +101,13 @@ export default function HospitalAlertSystem() {
               <CardContent>
                 <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
                   {cameraConnected ? (
-                    <img
+                    <Image
                       src={ESPCAM_STREAM_URL || "/placeholder.svg"}
                       alt="ESPCAM Live Feed"
                       className="w-full h-full object-cover"
                       onError={handleCameraError}
                       onLoad={handleCameraLoad}
+                      fill
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-white">
