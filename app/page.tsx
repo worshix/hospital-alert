@@ -1,103 +1,179 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState, useEffect } from "react"
+import { AlertTriangle, Shield, Camera, Wifi, WifiOff } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import Image from "next/image"
+
+export default function HospitalAlertSystem() {
+  const [isEmergency, setIsEmergency] = useState(false)
+  const [cameraConnected, setCameraConnected] = useState(true)
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  // ESPCAM stream URL - replace with your actual ESPCAM IP address
+  const ESPCAM_STREAM_URL = "http://192.168.1.100/stream"
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const handleEmergencyToggle = () => {
+    setIsEmergency(!isEmergency)
+  }
+
+  const handleCameraError = () => {
+    setCameraConnected(false)
+  }
+
+  const handleCameraLoad = () => {
+    setCameraConnected(true)
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div
+      className={`min-h-screen transition-colors duration-500 ${
+        isEmergency ? "bg-red-50 dark:bg-red-950" : "bg-green-50 dark:bg-green-950"
+      }`}
+    >
+      <div className="container mx-auto p-6 max-w-4xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2 rounded-full ${
+                isEmergency ? "bg-red-100 dark:bg-red-900" : "bg-green-100 dark:bg-green-900"
+              }`}
+            >
+              {isEmergency ? (
+                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+              ) : (
+                <Shield className="h-6 w-6 text-green-600 dark:text-green-400" />
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Hospital Alert System</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{currentTime.toLocaleString()}</p>
+            </div>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Demo Toggle Button */}
+          <Button
+            onClick={handleEmergencyToggle}
+            variant={isEmergency ? "destructive" : "default"}
+            className="font-semibold"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {isEmergency ? "Clear Emergency" : "Trigger Emergency"}
+          </Button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Main Content */}
+        {isEmergency ? (
+          <div className="space-y-6">
+            {/* Emergency Alert */}
+            <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <AlertDescription className="text-red-800 dark:text-red-200 font-semibold text-lg">
+                🚨 EMERGENCY ALERT - Patient requires immediate attention
+              </AlertDescription>
+            </Alert>
+
+            {/* Camera Feed */}
+            <Card className="border-red-200 dark:border-red-800">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-red-800 dark:text-red-200">
+                    <Camera className="h-5 w-5" />
+                    Live Camera Feed - Patient Room
+                  </CardTitle>
+                  <Badge variant={cameraConnected ? "default" : "destructive"} className="flex items-center gap-1">
+                    {cameraConnected ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+                    {cameraConnected ? "Connected" : "Disconnected"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
+                  {cameraConnected ? (
+                    <img
+                      src={ESPCAM_STREAM_URL || "/placeholder.svg"}
+                      alt="ESPCAM Live Feed"
+                      className="w-full h-full object-cover"
+                      onError={handleCameraError}
+                      onLoad={handleCameraLoad}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-white">
+                      <div className="text-center">
+                        <WifiOff className="h-12 w-12 mx-auto mb-2 text-red-400" />
+                        <p className="text-lg font-semibold">Camera Feed Unavailable</p>
+                        <p className="text-sm text-gray-300">Check ESPCAM connection</p>
+                        <p className="text-xs text-gray-400 mt-2">URL: {ESPCAM_STREAM_URL}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Emergency Overlay */}
+                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                    🔴 LIVE - EMERGENCY
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Instructions */}
+            <Card className="border-red-200 dark:border-red-800">
+              <CardContent className="pt-6">
+                <h3 className="font-semibold text-red-800 dark:text-red-200 mb-2">Emergency Protocol:</h3>
+                <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                  <li>• Medical staff has been automatically notified</li>
+                  <li>• Emergency response team is en route</li>
+                  <li>• Monitor patient condition via live feed</li>
+                  <li>• Prepare necessary medical equipment</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* Normal State */
+          <div className="text-center py-12">
+            <Card className="border-green-200 dark:border-green-800 max-w-md mx-auto">
+              <CardContent className="pt-8 pb-8">
+                <div className="mb-6">
+                  <div className="mx-auto w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-4">
+                    <Shield className="h-10 w-10 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">All Systems Normal</h2>
+                  <p className="text-green-700 dark:text-green-300">
+                    Patient monitoring is active. No emergencies detected.
+                  </p>
+                </div>
+
+                <div className="space-y-2 text-sm text-green-600 dark:text-green-400">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>ESPCAM System Online</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Alert System Active</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Monitoring Patient Room</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
