@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "Emergency" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "patientName" TEXT NOT NULL DEFAULT 'Tinashe',
+    "location" TEXT NOT NULL DEFAULT 'Ward 1'
+);

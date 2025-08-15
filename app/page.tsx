@@ -14,7 +14,7 @@ export default function HospitalAlertSystem() {
   const [currentTime, setCurrentTime] = useState(new Date())
 
   // ESPCAM stream URL - replace with your actual ESPCAM IP address
-  const ESPCAM_STREAM_URL = "http://192.168.1.100/stream"
+  const ESPCAM_STREAM_URL = "http://192.168.216.201/stream"
 
   useEffect(() => {
     const timer = setInterval(() => {
