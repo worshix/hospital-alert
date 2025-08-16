@@ -2,19 +2,21 @@
 
 import { useState, useEffect } from "react"
 import { AlertTriangle, Shield, Camera, Wifi, WifiOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import Image from "next/image"
+import { EmergencyTable } from "@/components/EmergencyTable"
+import { useEmergencyDetection } from "@/hooks/useEmergencyDetection"
 
 export default function HospitalAlertSystem() {
-  const [isEmergency, setIsEmergency] = useState(false)
   const [cameraConnected, setCameraConnected] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
 
   // ESPCAM stream URL - replace with your actual ESPCAM IP address
   const ESPCAM_STREAM_URL = "http://192.168.216.201/stream"
+
+  // Use the emergency detection hook
+  const { isEmergency, emergencies, isLoading } = useEmergencyDetection(ESPCAM_STREAM_URL)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -23,10 +25,6 @@ export default function HospitalAlertSystem() {
 
     return () => clearInterval(timer)
   }, [])
-
-  const handleEmergencyToggle = () => {
-    setIsEmergency(!isEmergency)
-  }
 
   const handleCameraError = () => {
     setCameraConnected(false)
@@ -63,14 +61,10 @@ export default function HospitalAlertSystem() {
             </div>
           </div>
 
-          {/* Demo Toggle Button */}
-          <Button
-            onClick={handleEmergencyToggle}
-            variant={isEmergency ? "destructive" : "default"}
-            className="font-semibold"
-          >
-            {isEmergency ? "Clear Emergency" : "Trigger Emergency"}
-          </Button>
+          {/* Status Badge */}
+          <Badge variant={isEmergency ? "destructive" : "default"} className="text-sm px-3 py-1">
+            {isEmergency ? "🚨 EMERGENCY ACTIVE" : "✅ ALL SYSTEMS NORMAL"}
+          </Badge>
         </div>
 
         {/* Main Content */}
@@ -101,13 +95,13 @@ export default function HospitalAlertSystem() {
               <CardContent>
                 <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
                   {cameraConnected ? (
-                    <Image
-                      src={ESPCAM_STREAM_URL || "/placeholder.svg"}
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={ESPCAM_STREAM_URL}
                       alt="ESPCAM Live Feed"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover block"
                       onError={handleCameraError}
                       onLoad={handleCameraLoad}
-                      fill
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-white">
@@ -174,6 +168,11 @@ export default function HospitalAlertSystem() {
             </Card>
           </div>
         )}
+
+        {/* Emergency Logs Table */}
+        <div className="mt-8">
+          <EmergencyTable emergencies={emergencies} isLoading={isLoading} />
+        </div>
       </div>
     </div>
   )
