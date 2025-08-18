@@ -13,7 +13,7 @@ export default function HospitalAlertSystem() {
   const [currentTime, setCurrentTime] = useState(new Date())
 
   // ESPCAM stream URL - replace with your actual ESPCAM IP address
-  const ESPCAM_STREAM_URL = "http://192.168.216.201/stream"
+  const ESPCAM_STREAM_URL = "http://192.168.43.163/stream"
 
   // Use the emergency detection hook
   const { isEmergency, emergencies, isLoading } = useEmergencyDetection(ESPCAM_STREAM_URL)
