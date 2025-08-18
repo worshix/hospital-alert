@@ -120,3 +120,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom styles for hospital alert system */
+.video-flip {
+  transform: scaleY(-1);
+}
