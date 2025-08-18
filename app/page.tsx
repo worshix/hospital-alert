@@ -11,7 +11,6 @@ import { useEmergencyDetection } from "@/hooks/useEmergencyDetection"
 export default function HospitalAlertSystem() {
   const [cameraConnected, setCameraConnected] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [streamKey, setStreamKey] = useState(0) // Force refresh of video stream
 
   // ESPCAM stream URL - replace with your actual ESPCAM IP address
   const ESPCAM_STREAM_URL = "http://192.168.43.163/stream"
@@ -29,22 +28,11 @@ export default function HospitalAlertSystem() {
 
   const handleCameraError = () => {
     setCameraConnected(false)
-    // Force refresh the stream after error
-    setTimeout(() => {
-      setStreamKey(prev => prev + 1)
-    }, 1000)
   }
 
   const handleCameraLoad = () => {
     setCameraConnected(true)
   }
-
-  // Force refresh stream when emergency state changes
-  useEffect(() => {
-    if (isEmergency) {
-      setStreamKey(prev => prev + 1)
-    }
-  }, [isEmergency])
 
   return (
     <div
@@ -109,13 +97,11 @@ export default function HospitalAlertSystem() {
                   {cameraConnected ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      key={streamKey} // Forces remount on key change
-                      src={`${ESPCAM_STREAM_URL}?t=${Date.now()}`} // Cache busting
+                      src={ESPCAM_STREAM_URL}
                       alt="ESPCAM Live Feed"
                       className="w-full h-full object-cover block video-flip"
                       onError={handleCameraError}
                       onLoad={handleCameraLoad}
-                      crossOrigin="anonymous"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-white">
